@@ -54,6 +54,16 @@ public class InvertedIndex {
     }
 
     public static void handleWords(String str) {
+        String[] words = str.split(" ");
+        for (int i=0; i<words.length; i++) {
+            String word = words[i].toLowerCase().trim();
+            if (word.equals("")) continue;
+            storeWord(word);
+            currentWordIndex++;
+        }
+    }
+
+    public static void storeWord(String str) {
     }
 
 }
