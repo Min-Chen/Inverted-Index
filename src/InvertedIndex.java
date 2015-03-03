@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 
@@ -12,6 +13,7 @@ public class InvertedIndex {
     private static int currentWordIndex;
     public static void main(String[] args)  {
         getFiles("./");
+        outPut();
     }
 
     public static String filteredLine(String str){
@@ -64,6 +66,48 @@ public class InvertedIndex {
     }
 
     public static void storeWord(String str) {
+        if(map.containsKey(str)) {
+            if(map.get(str).containsKey(currentFileName)) {
+                map.get(str).get(currentFileName).add(currentWordIndex);
+            }
+            else {
+                ArrayList<Integer> temAL = new ArrayList<Integer>();
+                temAL.add(currentWordIndex);
+                map.get(str).put(currentFileName,temAL);
+            }
+        }
+        else {
+            ArrayList<Integer> temAL = new ArrayList<Integer>();
+            temAL.add(currentWordIndex);
+            HashMap<String,ArrayList<Integer>> temMap = new HashMap<String, ArrayList<Integer>>();
+            temMap.put(currentFileName, temAL);
+            map.put(str, temMap);
+        }
+    }
+
+    public static void outPut() {
+        boolean firstFlag = true;
+        Object[] key_arr = map.keySet().toArray();
+        Arrays.sort(key_arr);
+        for (Object key : key_arr) {
+            if (firstFlag) {
+                System.out.print(key);
+                firstFlag = false;
+            }
+            else System.out.print("\n\n" + key);
+            HashMap map2 = map.get(key);
+
+            Object[] key_arr2 = map2.keySet().toArray();
+            Arrays.sort(key_arr2);
+            for (Object key2 : key_arr2) {
+                System.out.print("\n\"" + key2 + "\"");
+                ArrayList value2 = (ArrayList) map2.get(key2);
+
+                for (int i=0; i<value2.size(); i++) {
+                    System.out.print(", " + value2.get(i));
+                }
+            }
+        }
     }
 
 }
