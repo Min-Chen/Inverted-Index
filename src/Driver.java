@@ -7,13 +7,22 @@ import java.util.HashMap;
 /**
  * Created by minchen on 15/2/28.
  */
-public class InvertedIndex {
+public class Driver {
     private static HashMap<String, HashMap<String, ArrayList<Integer>>> map = new HashMap<String, HashMap<String, ArrayList<Integer>>>();
     private static String currentFileName;
     private static int currentWordIndex;
-    public static void main(String[] args)  {
-        getFiles("./");
-        outPut();
+
+    public static void main(String[] args) throws IOException {
+        String pathIn = "./";
+        String pathOut = "./index.txt";
+        if (args.length>=1 && args[0].equals("-d")) pathIn = args[1];
+        getFiles(pathIn);
+
+        if (args.length>=3 && args[2].equals("-i")) {
+            if (args.length > 3) pathOut = args[3];
+        }
+
+        outPut(pathOut);
     }
 
     public static String filteredLine(String str){
@@ -28,7 +37,6 @@ public class InvertedIndex {
         for (int i = 0; i < files.length; i++) {
             if(!files[i].isDirectory()){
                 if(files[i].toString().toLowerCase().endsWith(".txt")) {
-                    System.out.println(files[i]);
                     handleOneFile(files[i].getPath());
                 }
             }
@@ -85,29 +93,35 @@ public class InvertedIndex {
         }
     }
 
-    public static void outPut() {
+    public static void outPut(String path) throws IOException {
+        File file = new File(path);
+        file.createNewFile();
+        BufferedWriter out = new BufferedWriter(new FileWriter(file));
+
         boolean firstFlag = true;
         Object[] key_arr = map.keySet().toArray();
         Arrays.sort(key_arr);
         for (Object key : key_arr) {
             if (firstFlag) {
-                System.out.print(key);
+                out.write(key.toString());
                 firstFlag = false;
             }
-            else System.out.print("\n\n" + key);
+            else out.write("\n\n" + key);
             HashMap map2 = map.get(key);
 
             Object[] key_arr2 = map2.keySet().toArray();
             Arrays.sort(key_arr2);
             for (Object key2 : key_arr2) {
-                System.out.print("\n\"" + key2 + "\"");
+                out.write("\n\"" + key2 + "\"");
                 ArrayList value2 = (ArrayList) map2.get(key2);
 
                 for (int i=0; i<value2.size(); i++) {
-                    System.out.print(", " + value2.get(i));
+                    out.write(", " + value2.get(i));
                 }
             }
         }
+        out.flush();
+        out.close();
     }
 
 }
